@@ -4,7 +4,7 @@
     {
         string GetFrame(string inputVideo, int timeInSeconds);
 
-        string Join(string firstVideo, string secondVideo);
+        string Join(params string[] inputs);
 
         string Convert(string inputVideo, string format);
     }
