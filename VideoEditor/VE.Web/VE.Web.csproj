@@ -79,6 +79,7 @@
     <Compile Include="Contracts\IFfmpegService.cs" />
     <Compile Include="Controllers\StorageApiController.cs" />
     <Compile Include="Controllers\VideoApiController.cs" />
+    <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\VideoConversionOptions.cs" />
     <Compile Include="Models\VideoFormat.cs" />
     <Compile Include="Program.cs" />
