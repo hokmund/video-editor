@@ -13,6 +13,22 @@ namespace VE.Web.Services
         private const string FfmpegPath = "Libs\\ffmpeg.exe";
         private const string FfprobePath = "Libs\\ffprobe.exe";
 
+        private static readonly Dictionary<VideoFormat, string> VideoCodecs = new Dictionary<VideoFormat, string>
+        {
+            [VideoFormat.Flv] = "flv",
+            [VideoFormat.Mp4] = "libx264",
+            [VideoFormat.Webm] = "libvpx",
+            [VideoFormat.Ogv] = "libtheora",
+        };
+
+        private static readonly Dictionary<VideoFormat, string> AudioCodecs = new Dictionary<VideoFormat, string>
+        {
+            [VideoFormat.Flv] = "libmp3lame",
+            [VideoFormat.Mp4] = "libmp3lame",
+            [VideoFormat.Webm] = "libvorbis",
+            [VideoFormat.Ogv] = "libvorbis",
+        };
+
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
             var inputVideoName = Path.GetFileNameWithoutExtension(inputVideo);
@@ -44,7 +60,7 @@ namespace VE.Web.Services
             }
 
             var parameters = files + filters + $"concat=n={tempVideos.Count}:v=1:a=1[outv][outa]\" " +
-                             $"-map \"[outv]\" -map \"[outa]\" {outputVideo}";
+                             $"-map \"[outv]\" -map \"[outa]\" -y {outputVideo}";
 
             using (var process = ConfigureProcess(FfmpegPath, parameters))
             {
@@ -59,12 +75,40 @@ namespace VE.Web.Services
 
         public string Convert(string inputVideo, VideoConversionOptions options)
         {
-            var outputFile = FilesUtils.GetMediaFile("{0}_{1}.{2}",
+            var outputFile = FilesUtils.GetMediaFile(
+                "{0}_{1}.{2}",
                 Path.GetFileNameWithoutExtension(inputVideo),
                 Guid.NewGuid(),
                 options.Format.ToString());
 
-            var parameters = $"-i {inputVideo} -y {outputFile}";
+            var parameters = $"-i {inputVideo} ";
+
+            if (VideoCodecs.ContainsKey(options.Format))
+            {
+                parameters += $"-vcodec {VideoCodecs[options.Format]} ";
+            }
+
+            if (options.Width != 0 && options.Height != 0)
+            {
+                parameters += $"-s {options.Width}x{options.Height} ";
+            }
+
+            if (options.HorizontalAspect != 0 && options.VerticalAspect != 0)
+            {
+                parameters += $"-aspect {options.Width}:{options.Height} ";
+            }
+
+            if (options.Bitrate > 0)
+            {
+                parameters += $"-b:v {options.Bitrate}k ";
+            }
+
+            if (AudioCodecs.ContainsKey(options.Format))
+            {
+                parameters += $"-acodec {AudioCodecs[options.Format]}  -b:a 64k ";
+            }
+
+            parameters += $"-y {outputFile}";
 
             using (var process = ConfigureProcess(FfmpegPath, parameters))
             {
@@ -73,7 +117,7 @@ namespace VE.Web.Services
                 process.WaitForExit();
             }
 
-            return string.Empty;
+            return outputFile;
         }
 
         private static IList<string> AdjustResolutions(string[] inputs)
