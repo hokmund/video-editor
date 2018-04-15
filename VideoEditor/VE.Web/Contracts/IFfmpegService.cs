@@ -1,4 +1,5 @@
 ﻿using System;
+using VE.Web.Models;
 
 namespace VE.Web.Contracts
 {
@@ -8,8 +9,6 @@ namespace VE.Web.Contracts
 
         string Join(params string[] inputs);
 
-        string Convert(string inputVideo, string format);
-
-        event EventHandler OnConversionProgressChanged;
+        string Convert(string inputVideo, VideoConversionOptions options);
     }
 }

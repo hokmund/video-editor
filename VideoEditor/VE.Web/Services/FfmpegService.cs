@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using VE.Web.Contracts;
+using VE.Web.Models;
 
 namespace VE.Web.Services
 {
@@ -12,12 +13,10 @@ namespace VE.Web.Services
         private const string FfmpegPath = "Libs\\ffmpeg.exe";
         private const string FfprobePath = "Libs\\ffprobe.exe";
 
-        public event EventHandler OnConversionProgressChanged;
-
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
             var inputVideoName = Path.GetFileNameWithoutExtension(inputVideo);
-            var outputFrame = TempFilesUtils.GetTempFile("{0}_{1}_sec.jpeg", inputVideoName, timeInSeconds);
+            var outputFrame = TempFilesUtils.GetMediaFile("{0}_{1}_sec.jpeg", inputVideoName, timeInSeconds);
             var parameters = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
 
             using (var process = ConfigureProcess(FfmpegPath, parameters))
@@ -33,7 +32,7 @@ namespace VE.Web.Services
         {
             var tempVideos = AdjustResolutions(inputs);
 
-            var outputVideo = TempFilesUtils.GetTempFile("{0}.mp4", Guid.NewGuid());
+            var outputVideo = TempFilesUtils.GetMediaFile("{0}.mp4", Guid.NewGuid());
 
             var files = "";
             var filters = "-filter_complex \"";
@@ -58,9 +57,18 @@ namespace VE.Web.Services
             return outputVideo;
         }
 
-        public string Convert(string inputVideo, string format)
+        public string Convert(string inputVideo, VideoConversionOptions options)
         {
-            throw new NotImplementedException();
+            //var parameters = $"-i {inputVideo} -y {Path.ChangeExtension(inputVideo, format)}";
+
+            //using (var process = ConfigureProcess(FfmpegPath, parameters))
+            //{
+            //    process.Start();
+
+            //    process.WaitForExit();
+            //}
+
+            return string.Empty;
         }
 
         private static IList<string> AdjustResolutions(string[] inputs)

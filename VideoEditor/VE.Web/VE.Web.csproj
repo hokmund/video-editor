@@ -79,6 +79,8 @@
     <Compile Include="Contracts\IFfmpegService.cs" />
     <Compile Include="Controllers\StorageApiController.cs" />
     <Compile Include="Controllers\VideoApiController.cs" />
+    <Compile Include="Models\VideoConversionOptions.cs" />
+    <Compile Include="Models\VideoFormat.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FfmpegService.cs" />
@@ -93,9 +95,10 @@
     <None Include="wwwroot\fonts\glyphicons-halflings-regular.woff" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AppData\ignore.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="AppData\Media\ignore.txt" />
+    <Content Include="AppData\Media\sample1.mp4" />
+    <Content Include="AppData\Media\sample2.mp4" />
+    <Content Include="AppData\Temp\ignore.txt" />
     <Content Include="Libs\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
