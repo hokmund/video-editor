@@ -8,12 +8,12 @@ namespace VE.Web.Services
     public class FfmpegService : IFfmpegService
     {
         private const string AppDataFolder = "AppData";
-        private const string FfmpegPath = "Libs/ffmpeg.exe";
+        private const string FfmpegPath = "Libs\\ffmpeg.exe";
 
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
-            var outputFrame = $"{Path.GetFileNameWithoutExtension(inputVideo)}_{Guid.NewGuid()}.jpeg";
-            var command = $"{FfmpegPath} -ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame} 2>&1";
+            var outputFrame = $"{AppDataFolder}\\{Path.GetFileNameWithoutExtension(inputVideo)}_{Guid.NewGuid()}.jpeg";
+            var command = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
 
             var p = new Process
             {
@@ -21,7 +21,8 @@ namespace VE.Web.Services
                 {
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    FileName = command
+                    FileName = FfmpegPath,
+                    Arguments = command
                 }
             };
 
