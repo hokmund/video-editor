@@ -26,5 +26,13 @@ namespace VE.Web.Controllers
 
             return await Task.FromResult("Test");
         }
+
+        [Route("getFrame")]
+        [HttpGet]
+        public string GetFrame(string name, int time)
+        {
+            var inputVideo = $"{FilesUtils.MediaDataFolder}\\{name}";
+            return new FfmpegService().GetFrame(inputVideo, time).Replace('\\', '/');
+        }
     }
 }

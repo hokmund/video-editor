@@ -48,6 +48,11 @@ namespace VE.Web
             };
 
             appBuilder.UseFileServer(options);
+            appBuilder.UseStaticFiles(new StaticFileOptions()
+            {
+                RequestPath = new PathString("/AppData"),
+                FileSystem = new PhysicalFileSystem(@"AppData")
+            });
         }
     }
 }
