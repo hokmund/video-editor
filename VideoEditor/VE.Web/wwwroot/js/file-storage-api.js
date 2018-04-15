@@ -11,19 +11,16 @@
 
     // Make Ajax request with the contentType = false, and procesDate = false
     window.$.ajax({
-        type: "POST",
-        url: "/api/storage/upload",
-        contentType: false,
-        processData: false,
-        data: data
-    })
-        .success(function (xhr, textStatus) {
+            type: "POST",
+            url: "/api/storage/upload",
+            contentType: false,
+            processData: false,
+            data: data
+        })
+        .done(function(xhr, textStatus) {
             var t = xhr;
         })
-        .error(function (xhr, textStatus, err) {
-            var t = xhr;
-        })
-        .done(function (xhr, textStatus) {
+        .fail(function(xhr, textStatus, err) {
             var t = xhr;
         });
 });
