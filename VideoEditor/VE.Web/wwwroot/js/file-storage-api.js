@@ -1,4 +1,9 @@
-﻿$('#uploadFileSubmitBtn').on('click', function () {
+﻿$('#uploadFileModalBtn').bind('click', function (e) {
+    e.preventDefault();
+    window.$('#uploadFileModal').modal();
+});
+
+$('#uploadFileSubmitBtn').on('click', function () {
 
     var data = new FormData();
 

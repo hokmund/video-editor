@@ -58,7 +58,6 @@ var videoEditor = {
         $('#btnRemoveSegmet').bind('click', videoEditor.removeSegment);
         $('#btnSubmit').bind('click', videoEditor.createVideo);
         $('#btnRemove').bind('click', videoEditor.removeVideo);
-        $('#btnUpload').bind('click', videoEditor.uploadVideo);
         $('#btnPlay').bind('click', videoEditor.playVideo);
         $('#btnJoin').bind('click', videoEditor.joinInit);
         $('#opt_quality').bind('change', function () {
@@ -488,15 +487,6 @@ var videoEditor = {
         if (videoEditor.video.segments.length == 0 && !videoEditor.join_active) {
             $('#segments').slideUp();
         }
-    },
-
-    /* uploadVideo */
-    uploadVideo: function (e) {
-
-        e.preventDefault();
-
-        $('#uploadModal').modal();
-
     },
 
     /* removeVideo */
