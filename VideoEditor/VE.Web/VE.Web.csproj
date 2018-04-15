@@ -87,7 +87,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\ffmpeg.exe" />
+    <Content Include="Libs\ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\LICENSE.txt" />
     <Content Include="wwwroot\css\index.css" />
     <Content Include="wwwroot\index.html" />

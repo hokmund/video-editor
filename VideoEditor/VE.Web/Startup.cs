@@ -1,10 +1,4 @@
-﻿using System.Net.Http.Formatting;
-using System.Web.Http;
-using Microsoft.Owin;
-using Microsoft.Owin.FileSystems;
-using Microsoft.Owin.StaticFiles;
-using Owin;
-using VE.Web;
+﻿using VE.Web;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace VE.Web
