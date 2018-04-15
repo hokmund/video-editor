@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VE.Web.Contracts
+﻿namespace VE.Web.Contracts
 {
-    class IFfmpegService
+    public interface IFfmpegService
     {
+        string GetFrame(string inputVideo, int timeInSeconds);
+
+        string Join(string firstVideo, string secondVideo);
+
+        string Convert(string inputVideo, string format);
     }
 }
