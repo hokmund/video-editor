@@ -82,6 +82,7 @@
     <Compile Include="Controllers\VideoApiController.cs" />
     <Compile Include="Models\VideoConversionOptions.cs" />
     <Compile Include="Models\VideoFormat.cs" />
+    <Compile Include="Models\VideosListItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FfmpegService.cs" />

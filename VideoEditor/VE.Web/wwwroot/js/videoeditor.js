@@ -9,6 +9,7 @@ var videoEditor = {
         segments: []
     },
 
+    apiPath: '/api/',
     preloader_url: 'img/preloader.gif',
     handlerActive: 0,
     timer: null,
@@ -53,14 +54,15 @@ var videoEditor = {
 
         });
 
-        $('#btnStepBackward,#btnStepForward').bind('click', videoEditor.videoStep);
-        $('#btnGetSegmet').bind('click', videoEditor.getSegment);
-        $('#btnRemoveSegmet').bind('click', videoEditor.removeSegment);
-        $('#btnSubmit').bind('click', videoEditor.createVideo);
-        $('#btnRemove').bind('click', videoEditor.removeVideo);
-        $('#btnPlay').bind('click', videoEditor.playVideo);
-        $('#btnJoin').bind('click', videoEditor.joinInit);
-        $('#opt_quality').bind('change', function () {
+        $('#btnStepBackward,#btnStepForward').click(videoEditor.videoStep);
+        $('#btnGetSegmet').click(videoEditor.getSegment);
+        $('#btnRemoveSegmet').click(videoEditor.removeSegment);
+        $('#btnSubmit').click(videoEditor.createVideo);
+        $('#btnRemove').click(videoEditor.removeVideo);
+        $('#btnUpload').click(videoEditor.uploadVideo);
+        $('#btnPlay').click(videoEditor.playVideo);
+        $('#btnJoin').click(videoEditor.joinInit);
+        $('#opt_quality').change(function () {
             var value = $(this).val();
             if (value == '' || value == 0) {
                 $('#opt_size').prop('disabled', 'disabled').val('');
@@ -81,7 +83,7 @@ var videoEditor = {
         $(document).on('click', '#segments div', videoEditor.selectSegment);
 
         //on resize
-        $(window).bind('resize', function () {
+        $(window).resize(function () {
             videoEditor.centerImage($('#video-preview .left'));
             videoEditor.centerImage($('#video-preview .right'));
         });
@@ -92,13 +94,13 @@ var videoEditor = {
      * ajaxRequest
      *
      */
-    ajaxRequest: function (post_data, callback) {
+    ajaxRequest: function (url, post_data, callback) {
 
         $.ajax({
             type: "POST",
             cache: false,
             dataType: 'json',
-            url: 'action.php',
+            url: this.apiPath + url,
             data: post_data,
             success: function (response) {
 
@@ -308,50 +310,39 @@ var videoEditor = {
     /* getListInput */
     getListInput: function (callback) {
 
-        var post_data = { action: 'get_list', type: 'input' };
+        this.ajaxRequest('storage/getVideosList', {}, function (response) {
 
-        $.ajax({
-            type: "POST",
-            cache: false,
-            dataType: 'json',
-            url: 'action.php',
-            data: post_data,
-            success: function (response) {
+            if (response) {
 
-                if (!!response.data && !!response.data.list) {
+                $('#listInput').empty();
 
-                    $('#listInput').empty();
+                for (var i in response) {
 
-                    for (var i in response.data.list) {
+                    if (!response.hasOwnProperty(i)) continue;
 
-                        if (!response.data.list.hasOwnProperty(i)) continue;
-
-                        var name = response.data.list[i].name;
-                        var ext = name.split('.').pop();
-                        var title_str = '';
-                        if (name.length - 4 > 20) {
-                            title_str = ' title="' + name + '"';
-                            name = name.substr(0, 20) + '...' + ext;
-                        }
-                        var size = response.data.list[i].size.toString() + ' MB';
-
-                        var row = '<a href="#" class="list-group-item" data-value="' + response.data.list[i].name + '"' + title_str + '>' + name + ' (' + size + ')</a>';
-
-                        $('#listInput').append(row);
-
+                    var name = response[i].name;
+                    var ext = name.split('.').pop();
+                    var title_str = '';
+                    if (name.length - 4 > 20) {
+                        title_str = ' title="' + name + '"';
+                        name = name.substr(0, 20) + '...' + ext;
                     }
+                    var size = response[i].size.toString() + ' MB';
 
-                    $('#listInput a:first').addClass('active');
+                    var row = '<a href="#" class="list-group-item" data-value="' + response[i].name + '"' + title_str + '>' + name + ' (' + size + ')</a>';
 
-                    if (typeof callback == 'function') {
-                        callback();
-                    }
+                    $('#listInput').append(row);
 
                 }
 
-            }, error: function (jqXHR, textStatus, errorThrown) {
-                if (typeof (console) != 'undefined') console.log(textStatus + ' ' + errorThrown);
+                $('#listInput a:first').addClass('active');
+
+                if (typeof callback == 'function') {
+                    callback();
+                }
+
             }
+
         });
 
     },
@@ -369,21 +360,21 @@ var videoEditor = {
             data: post_data,
             success: function (response) {
 
-                if (!!response.data && !!response.data.list) {
+                if (response) {
 
                     $('#listOutput').html('<table class="table table-bordered table-hover"></table>');
 
-                    if (response.data.list.length > 0) {
-                        for (var i in response.data.list) {
+                    if (response.length > 0) {
+                        for (var i in response) {
 
-                            if (!response.data.list.hasOwnProperty(i)) continue;
+                            if (!response.hasOwnProperty(i)) continue;
 
-                            var name = response.data.list[i].name;
-                            var size = response.data.list[i].size.toString() + ' MB';
+                            var name = response[i].name;
+                            var size = response[i].size.toString() + ' MB';
 
                             var row = '<tr>';
                             row += '<td><a href="output/' + name + '" target="_blank">' + name + '</a></td>';
-                            row += '<td>' + size + '</a></td><td>' + response.data.list[i].time + '</a></td>';
+                            row += '<td>' + size + '</a></td><td>' + response[i].time + '</a></td>';
                             row += '<td class="text-right">';
                             row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="Проиграть"><span class="glyphicon glyphicon-play"></span></button>';
                             row += ' <button class="btn btn-default btn-sm add_to_join" data-value="' + name + '" disabled="disabled" data-toggle="tooltip" title="Добавить эпизод"><span class="glyphicon glyphicon-save"></span></button>';

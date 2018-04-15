@@ -8,6 +8,8 @@
 
         Avi,
 
+        Ogv,
+
         Mpg,
 
         Webm
