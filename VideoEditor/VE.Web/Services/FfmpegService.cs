@@ -9,19 +9,22 @@ namespace VE.Web.Services
 {
     public class FfmpegService : IFfmpegService
     {
-        private const string AppDataFolder = "AppData";
         private const string FfmpegPath = "Libs\\ffmpeg.exe";
         private const string FfprobePath = "Libs\\ffprobe.exe";
-        
+
+        public event EventHandler OnConversionProgressChanged;
+
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
-            var outputFrame = GetTempFile("{0}_{1}_sec.jpeg", Path.GetFileNameWithoutExtension(inputVideo), timeInSeconds);
+            var inputVideoName = Path.GetFileNameWithoutExtension(inputVideo);
+            var outputFrame = TempFilesUtils.GetTempFile("{0}_{1}_sec.jpeg", inputVideoName, timeInSeconds);
             var parameters = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
 
-            var process = ConfigureProcess(FfmpegPath, parameters);
-
-            process.Start();
-            process.WaitForExit();
+            using (var process = ConfigureProcess(FfmpegPath, parameters))
+            {
+                process.Start();
+                process.WaitForExit();
+            }
 
             return outputFrame;
         }
@@ -30,7 +33,7 @@ namespace VE.Web.Services
         {
             var tempVideos = AdjustResolutions(inputs);
 
-            var outputVideo = GetTempFile("{0}.mp4", Guid.NewGuid());
+            var outputVideo = TempFilesUtils.GetTempFile("{0}.mp4", Guid.NewGuid());
 
             var files = "";
             var filters = "-filter_complex \"";
@@ -44,22 +47,20 @@ namespace VE.Web.Services
             var parameters = files + filters + $"concat=n={tempVideos.Count}:v=1:a=1[outv][outa]\" " +
                              $"-map \"[outv]\" -map \"[outa]\" {outputVideo}";
 
-            var process = ConfigureProcess(FfmpegPath, parameters);
+            using (var process = ConfigureProcess(FfmpegPath, parameters))
+            {
+                process.Start();
+                process.WaitForExit();
+            }
 
-            process.Start();
-            process.WaitForExit();
-
-            CleanTempFiles(tempVideos);
+            TempFilesUtils.CleanTempFiles(tempVideos);
 
             return outputVideo;
         }
 
-        private static void CleanTempFiles(IEnumerable<string> tempFiles)
+        public string Convert(string inputVideo, string format)
         {
-            foreach (var tempFile in tempFiles)
-            {
-                File.Delete(tempFile);
-            }
+            throw new NotImplementedException();
         }
 
         private static IList<string> AdjustResolutions(string[] inputs)
@@ -71,22 +72,24 @@ namespace VE.Web.Services
 
             foreach (var input in inputs)
             {
-                var parameters = "-v error -select_streams v:0 -show_entries " + 
+                var parameters = "-v error -select_streams v:0 -show_entries " +
                     $"stream=width,height -of csv=s=x:p=0 {input}";
 
-                var process = ConfigureProcess(FfprobePath, parameters);
-                process.Start();
-                process.WaitForExit();
-
-                var line = process.StandardOutput.ReadLine();
-
-                if (line != null)
+                using (var process = ConfigureProcess(FfprobePath, parameters))
                 {
-                    var args = line.Split('x').Select(int.Parse).ToArray();
-                    resolutions[input] = args;
+                    process.Start();
+                    process.WaitForExit();
 
-                    maxWidth = Math.Max(maxWidth, args[0]);
-                    maxHeight = Math.Max(maxHeight, args[1]);
+                    var line = process.StandardOutput.ReadLine();
+
+                    if (line != null)
+                    {
+                        var args = line.Split('x').Select(int.Parse).ToArray();
+                        resolutions[input] = args;
+
+                        maxWidth = Math.Max(maxWidth, args[0]);
+                        maxHeight = Math.Max(maxHeight, args[1]);
+                    }
                 }
             }
 
@@ -95,7 +98,7 @@ namespace VE.Web.Services
             foreach (var input in inputs)
             {
                 var tempVideo = $"{Path.GetFileNameWithoutExtension(input)}_{Guid.NewGuid()}.{Path.GetExtension(input)}";
-                tempVideo = Path.Combine(AppDataFolder, tempVideo);
+                tempVideo = TempFilesUtils.GetTempFile(tempVideo);
 
                 // Upscale video if it is too small.
                 if (resolutions[input][0] != maxWidth || resolutions[input][1] != maxHeight)
@@ -105,10 +108,11 @@ namespace VE.Web.Services
                                      $"pad={maxWidth}:{maxHeight}:(ow-iw)/2:(oh-ih)/2\" " +
                                      $"{tempVideo}";
 
-                    var process = ConfigureProcess(FfmpegPath, parameters);
-
-                    process.Start();
-                    process.WaitForExit();
+                    using (var process = ConfigureProcess(FfmpegPath, parameters))
+                    {
+                        process.Start();
+                        process.WaitForExit();
+                    }
                 }
                 else
                 {
@@ -119,16 +123,6 @@ namespace VE.Web.Services
             }
 
             return tempVideos;
-        }
-
-        public string Convert(string inputVideo, string format)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static string GetTempFile(string fileNameTemplate, params object[] inputs)
-        {
-            return Path.Combine(AppDataFolder, string.Format(fileNameTemplate, inputs));
         }
 
         private static Process ConfigureProcess(string utility, string parameters)

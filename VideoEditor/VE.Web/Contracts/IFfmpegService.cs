@@ -1,4 +1,6 @@
-﻿namespace VE.Web.Contracts
+﻿using System;
+
+namespace VE.Web.Contracts
 {
     public interface IFfmpegService
     {
@@ -7,5 +9,7 @@
         string Join(params string[] inputs);
 
         string Convert(string inputVideo, string format);
+
+        event EventHandler OnConversionProgressChanged;
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FfmpegService.cs" />
+    <Compile Include="Services\TempFilesUtils.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
