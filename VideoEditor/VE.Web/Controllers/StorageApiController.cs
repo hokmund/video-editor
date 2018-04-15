@@ -43,23 +43,15 @@ namespace VE.Web.Controllers
         [HttpGet]
         public HttpResponseMessage Download(string fileId)
         {
-            FileInfo fileInfo = new DirectoryInfo(GetRootPath())
-                .GetFiles()
-                .FirstOrDefault(f => f.Name.Equals(fileId + f.Extension, StringComparison.InvariantCultureIgnoreCase));
-
-            HttpResponseMessage response = this.Request.CreateResponse();
-
+            FileInfo fileInfo = GetFileInfo(fileId);
             if (fileInfo == null)
             {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                response.ReasonPhrase = $"File '{fileId}' not found.";
-
-                return response;
+                return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{fileId}' not found.");
             }
 
             FileStream file = File.OpenRead(fileInfo.FullName);
 
-            response.StatusCode = HttpStatusCode.OK;
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StreamContent(file);
             response.Content.Headers.ContentLength = file.Length;
 
@@ -83,6 +75,21 @@ namespace VE.Web.Controllers
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
         }
 
+        [Route("delete/{fileId}")]
+        [HttpGet]
+        public HttpResponseMessage Delete(string fileId)
+        {
+            FileInfo fileInfo = GetFileInfo(fileId);
+            if (fileInfo == null)
+            {
+                return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{fileId}' not found.");
+            }
+
+            File.Delete(fileInfo.FullName);
+
+            return this.Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         private static string GetRootPath()
         {
             string root = Path.Combine(
@@ -90,6 +97,15 @@ namespace VE.Web.Controllers
                 FilesUtils.MediaDataFolder);
 
             return new Uri(root).LocalPath;
+        }
+
+        private static FileInfo GetFileInfo(string fileId)
+        {
+            FileInfo fileInfo = new DirectoryInfo(GetRootPath())
+                .GetFiles()
+                .FirstOrDefault(f => f.Name.Equals(fileId + f.Extension, StringComparison.InvariantCultureIgnoreCase));
+
+            return fileInfo;
         }
     }
 }
