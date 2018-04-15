@@ -76,7 +76,7 @@ namespace VE.Web.Controllers
         }
 
         [Route("delete/{fileId}")]
-        [HttpGet]
+        [HttpDelete]
         public HttpResponseMessage Delete(string fileId)
         {
             FileInfo fileInfo = GetFileInfo(fileId);
