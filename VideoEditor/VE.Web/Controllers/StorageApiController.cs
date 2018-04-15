@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using VE.Web.Models;
+using VE.Web.Services;
 
 namespace VE.Web.Controllers
 {
@@ -74,7 +75,7 @@ namespace VE.Web.Controllers
         {
             string root = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase) ?? string.Empty,
-                Constants.MediaDataFolder);
+                FilesUtils.MediaDataFolder);
 
             return new Uri(root).LocalPath;
         }

@@ -5,10 +5,10 @@ namespace VE.Web.Services
 {
     public static class FilesUtils
     {
-        private const string AppDataFolder = "AppData";
+        public const string AppDataFolder = "AppData";
 
-        private static readonly string MediaDataFolder = Path.Combine(AppDataFolder, "Media");
-        private static readonly string TempDataFolder = Path.Combine(AppDataFolder, "Temp");
+        public static readonly string MediaDataFolder = Path.Combine(AppDataFolder, "Media");
+        public static readonly string TempDataFolder = Path.Combine(AppDataFolder, "Temp");
 
         public static void CleanTempFiles(IEnumerable<string> tempFiles)
         {
