@@ -1,11 +1,3 @@
-
-/**
- * VideoEditor
- * 
- * @version 1.0
- * @author Andchir <andchir@gmail.com>
- */
-
 var videoEditor = {
 
     video: {
@@ -22,8 +14,6 @@ var videoEditor = {
     timer: null,
     join_active: false,
     join_arr: [],
-    lang: 'en',//language
-    player_type: 'flowplayer',//flowplayer | videojs | codoplayer
     player: null,
 
     /* init */
@@ -37,7 +27,7 @@ var videoEditor = {
             step: 0.01,
             stop: function (event, ui) {
 
-                var index = $(ui.handle).prevAll('.ui-slider-handle').size();
+                var index = $(ui.handle).prevAll('.ui-slider-handle').size;
                 var time = videoEditor.secondsToTime(ui.value / videoEditor.video.fps);
 
                 videoEditor.getFrame(time, index);
@@ -200,7 +190,7 @@ var videoEditor = {
 
         if (typeof e != 'undefined') e.preventDefault;
 
-        if ($('#input-list a').size() > 0 && !videoEditor.join_active) {
+        if ($('#input-list a').size > 0 && !videoEditor.join_active) {
 
             videoEditor.video.segments = [];
             if (!$('#segments').is(':hidden')) $('#segments').empty().slideUp();
@@ -303,7 +293,7 @@ var videoEditor = {
         videoEditor.stopVideo();
 
         var target = !$(e.target).is('button') ? $(e.target).parent() : $(e.target);
-        var index = target.parent().prevAll().size();
+        var index = target.parent().prevAll().size;
         var values = $("#time-range").slider("values");
         var stepSize = 5;
         var newValue = index == 0 ? values[videoEditor.handlerActive] - stepSize : values[videoEditor.handlerActive] + stepSize;
@@ -396,9 +386,9 @@ var videoEditor = {
                             row += '<td><a href="output/' + name + '" target="_blank">' + name + '</a></td>';
                             row += '<td>' + size + '</a></td><td>' + response.data.list[i].time + '</a></td>';
                             row += '<td class="text-right">';
-                            row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="' + ve_lang[videoEditor.lang]['play'] + '"><span class="glyphicon glyphicon-play"></span></button>';
-                            row += ' <button class="btn btn-default btn-sm add_to_join" data-value="' + name + '" disabled="disabled" data-toggle="tooltip" title="' + ve_lang[videoEditor.lang]['add_segment'] + '"><span class="glyphicon glyphicon-save"></span></button>';
-                            row += ' <button class="btn btn-default btn-sm remove" data-value="' + name + '" data-toggle="tooltip" title="' + ve_lang[videoEditor.lang]['delete'] + '"><span class="glyphicon glyphicon-remove"></span></button>';
+                            row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="Проиграть"><span class="glyphicon glyphicon-play"></span></button>';
+                            row += ' <button class="btn btn-default btn-sm add_to_join" data-value="' + name + '" disabled="disabled" data-toggle="tooltip" title="Добавить эпизод"><span class="glyphicon glyphicon-save"></span></button>';
+                            row += ' <button class="btn btn-default btn-sm remove" data-value="' + name + '" data-toggle="tooltip" title="Удалить"><span class="glyphicon glyphicon-remove"></span></button>';
                             row += '</td></tr>';
 
                             $('#listOutput table').append(row);
@@ -460,13 +450,13 @@ var videoEditor = {
         if (!videoEditor.join_active) videoEditor.stopVideo();
 
         var segmentElem = $('#segments div.active');
-        if (segmentElem.size() == 0) {
+        if (segmentElem.size == 0) {
             segmentElem = $('#segments div:last');
         }
 
-        if (segmentElem.size() > 0) {
+        if (segmentElem.size > 0) {
 
-            var segmentIndex = segmentElem.prevAll().size();
+            var segmentIndex = segmentElem.prevAll().size;
 
             //remove segment
             if (!videoEditor.join_active) {
@@ -520,10 +510,10 @@ var videoEditor = {
         var video_name = !!target.data('value') ? target.data('value') : videoEditor.video.name;
         var video_type = !!target.data('value') ? 'output' : 'input';
 
-        $('#modal .modal-title').text(ve_lang[videoEditor.lang]['confirm']);
-        $('#modal .modal-body').html('<p>' + ve_lang[videoEditor.lang]['confirm_del_txt'] + '</p>');
+        $('#modal .modal-title').text('Подтверждение');
+        $('#modal .modal-body').html('<p>Вы уверены, что хотите удалить данное видео?</p>');
         $('#modal .modal-footer button:eq(0)')
-            .text(ve_lang[videoEditor.lang]['yes'])
+            .text('Да')
             .show()
             .unbind('click')
             .bind('click', function () {
@@ -542,7 +532,7 @@ var videoEditor = {
 
                         if (!!response && !!response.error) {
 
-                            $('#modal .modal-title').text(ve_lang[videoEditor.lang]['error']);
+                            $('#modal .modal-title').text('Ошибка');
                             $('#modal .modal-body').html('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-warning-sign"></span> ' + response.msg + '</div>');
 
                         } else {
@@ -646,7 +636,7 @@ var videoEditor = {
 
             if (!!response && !!response.error) {
 
-                $('#modal .modal-title').text(ve_lang[videoEditor.lang]['error']);
+                $('#modal .modal-title').text('Ошибка');
                 $('#modal .modal-body').html('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-warning-sign"></span> ' + response.msg + '</div>');
 
             }
@@ -687,12 +677,12 @@ var videoEditor = {
         var video_name = !!target.data('value') ? target.data('value') : videoEditor.video.name;
         var video_url = videoEditor.getUrl() + video_dir + '/' + video_name;
 
-        if ($('#video-player').size() == 0) {
+        if ($('#video-player').size == 0) {
 
             var p_html = '<div id="video-player">\
             <button class="btn-close"><span class="glyphicon glyphicon-remove"></span></button>\
-            <button class="btn-getposition pos-in" title="' + ve_lang[videoEditor.lang]['marker_start'] + '"><b>[</b></button>\
-            <button class="btn-getposition pos-out" title="' + ve_lang[videoEditor.lang]['marker_end'] + '"><b>]</b></button>\
+            <button class="btn-getposition pos-in" title="Установить маркер начала"><b>[</b></button>\
+            <button class="btn-getposition pos-out" title="Установить маркер конца"><b>]</b></button>\
             <div id="v_player"></div>\
             </div>';
             $('#video-preview').append(p_html);
@@ -709,10 +699,10 @@ var videoEditor = {
 
         $('#video-player').show();
 
-        if (videoEditor.join_active && $('#segments div.active').size() > 0) {
+        if (videoEditor.join_active && $('#segments div.active').size > 0) {
 
             var segmentElem = $('#segments div.active');
-            var segmentIndex = segmentElem.prevAll().size();
+            var segmentIndex = segmentElem.prevAll().size;
             video_name = videoEditor.join_arr[segmentIndex][0];
             video_url = videoEditor.getUrl() + 'output/' + video_name;
 
@@ -721,10 +711,10 @@ var videoEditor = {
         //make preview video
         else if (video_dir == 'input') {
 
-            if ($('#segments div.active').size() > 0) {
+            if ($('#segments div.active').size > 0) {
 
                 var segmentElem = $('#segments div.active');
-                var segmentIndex = segmentElem.prevAll().size();
+                var segmentIndex = segmentElem.prevAll().size;
                 var values = videoEditor.video.segments[segmentIndex];
 
             } else {
@@ -760,36 +750,11 @@ var videoEditor = {
 
         var current_video_url = '';
 
-        //flowplayer
-        if (videoEditor.player_type == 'flowplayer') {
+        if (videoEditor.player != null) {
 
-            if (videoEditor.player != null) {
-
-                current_video_url = videoEditor.player.video.src;
-                videoEditor.player.stop();
-                videoEditor.player.unload();
-
-            }
-
-        }
-        //videojs
-        else if (videoEditor.player_type == 'videojs') {
-
-            if (videoEditor.player != null) {
-                current_video_url = !!videoEditor.player.cache_ ? videoEditor.player.cache_.src : '';
-                videoEditor.player.pause();
-                videoEditor.player.dispose();
-            }
-
-        }
-        //codoplayer
-        else if (videoEditor.player_type == 'codoplayer') {
-
-            if (videoEditor.player != null) {
-                current_video_url = videoEditor.player.playlist.getCurrentClip().src[0];
-                videoEditor.player.pause();
-                videoEditor.player.destroy();
-            }
+            current_video_url = videoEditor.player.video.src;
+            videoEditor.player.stop();
+            videoEditor.player.unload();
 
         }
 
@@ -815,17 +780,8 @@ var videoEditor = {
 
         if (!$('#video-player').is(':hidden')) {
 
-            if (videoEditor.player_type == 'flowplayer') {
-                videoEditor.player.pause();
-                var currentPos = videoEditor.player.video.time;
-            }
-            else if (videoEditor.player_type == 'videojs') {
-                videoEditor.player.pause();
-                var currentPos = videoEditor.player.currentTime();
-            } else if (videoEditor.player_type == 'codoplayer') {
-                videoEditor.player.pause();
-                var currentPos = videoEditor.player.media.getCurrentTime();
-            }
+            videoEditor.player.pause();
+            var currentPos = videoEditor.player.video.time;
 
             var target = $(e.target).is('button') ? $(e.target) : $(e.target).parent('button');
             var values = $("#time-range").slider("values");
@@ -848,104 +804,34 @@ var videoEditor = {
         var uniqid = (new Date().getTime()).toString(16);
         video_url += '?v=' + uniqid;
 
-        //flowplayer
-        if (videoEditor.player_type == 'flowplayer') {
+        if (videoEditor.player == null) {
 
-            if (videoEditor.player == null) {
+            var player_html = '<div id="video1" class="flowplayer no-hover" data-swf="js/flowplayer/html5/flowplayer.swf">\
+                <video width="100%" height="300" autoplay>\
+                    <source type="video/'+ video_ext + '" src="' + video_url + '">\
+                </video>\
+            </div>';
 
-                var player_html = '<div id="video1" class="flowplayer no-hover" data-swf="js/flowplayer/html5/flowplayer.swf">\
-                    <video width="100%" height="300" autoplay>\
-                        <source type="video/'+ video_ext + '" src="' + video_url + '">\
-                    </video>\
-                </div>';
+            $('#v_player').html(player_html);
 
-                $('#v_player').html(player_html);
+            $("#video1").flowplayer({
+                engine: 'html5',
+                adaptiveRatio: false,
+                flashfit: true,
+                fullscreen: false
+            });
 
-                $("#video1").flowplayer({
-                    engine: 'html5',
-                    adaptiveRatio: false,
-                    flashfit: true,
-                    fullscreen: false
-                });
+            videoEditor.player = flowplayer($("#video1"));
 
-                videoEditor.player = flowplayer($("#video1"));
+        }
+        else {
 
-            }
-            else {
-
-                if (videoEditor.player.paused) {
+            if (videoEditor.player.paused) {
+                videoEditor.player.load(video_url);
+            } else {
+                videoEditor.player.pause(function () {
                     videoEditor.player.load(video_url);
-                } else {
-                    videoEditor.player.pause(function () {
-                        videoEditor.player.load(video_url);
-                    });
-                }
-
-            }
-
-        }
-        //videojs
-        else if (videoEditor.player_type == 'videojs') {
-
-            if (videoEditor.player == null) {
-
-                var player_html = '<video id="video1" class="video-js vjs-default-skin vjs-big-play-centered"\
-                    controls preload="auto" width="100%" height="300">\
-                    <source src="'+ video_url + '" type="video/' + video_ext + '" />\
-                </video>';
-
-                $('#v_player').html(player_html);
-
-                videoEditor.player = videojs("video1", {
-                    autoplay: true
                 });
-
-            } else {
-
-                videoEditor.player.pause();
-                videoEditor.player.src(video_url);
-
-            }
-
-        }
-        //codoplayer
-        else if (videoEditor.player_type == 'codoplayer') {
-
-            if (videoEditor.player == null) {
-
-                var player_html = '<div id="video1"></div>';
-                $('#v_player').html(player_html);
-
-                videoEditor.player = CodoPlayer([{
-                    src: video_url
-                }],
-                    {
-                        //width: 790,
-                        height: 300,
-                        preload: true,
-                        autoplay: true,
-                        volume: 80,
-                        engine: "auto",
-                        playlist: false,
-                        controls: {
-                            show: 'auto',
-                            hideDelay: 3,
-                            play: true,
-                            playBtn: true,
-                            seek: true,
-                            volume: 'horizontal',
-                            fullscreen: true,
-                            title: false,
-                            time: true
-                        }
-                    }, '#video1');
-
-            } else {
-
-                videoEditor.player.pause();
-                videoEditor.player.playlist.set({ src: video_url });
-                videoEditor.player.play();
-
             }
 
         }
@@ -1018,12 +904,12 @@ var videoEditor = {
         var progress_bar = '\
         <div class="progress">\
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0.1" aria-valuemin="0" aria-valuemax="100" style="width:0;">\
-                <span class="sr-only">' + ve_lang[videoEditor.lang]['process'] + '...</span>\
+                <span class="sr-only">Выполнение...</span>\
             </div>\
         </div>\
         ';
 
-        $('#modal .modal-title').text(ve_lang[videoEditor.lang]['process']);
+        $('#modal .modal-title').text('Выполнение');
         $('#modal .modal-footer button:eq(0)').hide().unbind('click');
         $('#modal .modal-body').html(progress_bar);
         $('#modal').modal();
@@ -1125,7 +1011,7 @@ var videoEditor = {
             $('#segments').empty().css('margin-top', 0).show();
             //$('#opt_quality').val('').find('option:first').prop('disabled',true);
 
-            if ($('#video-player').size() == 0) {
+            if ($('#video-player').size == 0) {
 
                 $('#video-preview').append('<div id="video-player"><div id="v_player"></div></div>');
 
