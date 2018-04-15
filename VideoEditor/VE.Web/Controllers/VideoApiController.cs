@@ -11,7 +11,6 @@ namespace VE.Web.Controllers
         [HttpGet]
         public async Task<string> Test()
         {
-            new FfmpegService().GetFrame("E:\\Code\\MMS\\video-editor\\VideoEditor\\VE.Web\\AppData\\sample.mp4", 1);
             new FfmpegService().Join("E:\\Code\\MMS\\video-editor\\VideoEditor\\VE.Web\\AppData\\sample.mp4",
                 "E:\\Code\\MMS\\V80310-215224.mp4");
 

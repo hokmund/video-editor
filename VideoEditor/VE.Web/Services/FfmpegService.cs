@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using VE.Web.Contracts;
 
 namespace VE.Web.Services
@@ -66,6 +67,8 @@ namespace VE.Web.Services
             var maxHeight = 0;
             var maxWidth = 0;
 
+            var resolutions = new Dictionary<string, int[]>();
+
             foreach (var input in inputs)
             {
                 var parameters = "-v error -select_streams v:0 -show_entries " + 
@@ -79,10 +82,11 @@ namespace VE.Web.Services
 
                 if (line != null)
                 {
-                    var args = line.Split('x');
+                    var args = line.Split('x').Select(int.Parse).ToArray();
+                    resolutions[input] = args;
 
-                    maxWidth = Math.Max(maxWidth, int.Parse(args[0]));
-                    maxHeight = Math.Max(maxHeight, int.Parse(args[1]));
+                    maxWidth = Math.Max(maxWidth, args[0]);
+                    maxHeight = Math.Max(maxHeight, args[1]);
                 }
             }
 
@@ -91,15 +95,25 @@ namespace VE.Web.Services
             foreach (var input in inputs)
             {
                 var tempVideo = $"{Path.GetFileNameWithoutExtension(input)}_{Guid.NewGuid()}.{Path.GetExtension(input)}";
-                var parameters = $"-i {input} -vf " +
-                                 $"\"scale=w={maxWidth}:h={maxHeight}:force_original_aspect_ratio=1," +
-                                 $"pad={maxWidth}:{maxHeight}:(ow-iw)/2:(oh-ih)/2\" " +
-                                 $"{Path.Combine(AppDataFolder, tempVideo)}";
+                tempVideo = Path.Combine(AppDataFolder, tempVideo);
 
-                var process = ConfigureProcess(FfmpegPath, parameters);
+                // Upscale video if it is too small.
+                if (resolutions[input][0] != maxWidth || resolutions[input][1] != maxHeight)
+                {
+                    var parameters = $"-i {input} -vf " +
+                                     $"\"scale=w={maxWidth}:h={maxHeight}:force_original_aspect_ratio=1," +
+                                     $"pad={maxWidth}:{maxHeight}:(ow-iw)/2:(oh-ih)/2\" " +
+                                     $"{tempVideo}";
 
-                process.Start();
-                process.WaitForExit();
+                    var process = ConfigureProcess(FfmpegPath, parameters);
+
+                    process.Start();
+                    process.WaitForExit();
+                }
+                else
+                {
+                    File.Copy(input, tempVideo);
+                }
 
                 tempVideos.Add(tempVideo);
             }
