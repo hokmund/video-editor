@@ -12,36 +12,45 @@ namespace VE.Web.Services
 
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
-            var outputFrame = $"{AppDataFolder}\\{Path.GetFileNameWithoutExtension(inputVideo)}_{Guid.NewGuid()}.jpeg";
-            var command = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
+            var outputFrame = GetTempFile("{0}_{1}_sec.jpeg", inputVideo, timeInSeconds);
+            var parameters = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
 
-            var p = new Process
-            {
-                StartInfo =
-                {
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    FileName = FfmpegPath,
-                    Arguments = command
-                }
-            };
+            var process = ConfigureFfmpegProcess(parameters);
 
-            p.Start();
-
-            var output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
+            process.Start();
+            process.WaitForExit();
 
             return outputFrame;
         }
 
         public string Join(string firstVideo, string secondVideo)
         {
-            throw new System.NotImplementedException();
+            var outputVideo = GetTempFile("{0}_{1}.mp4", firstVideo, secondVideo);
+            return outputVideo;
         }
 
         public string Convert(string inputVideo, string format)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        private static string GetTempFile(string fileNameTemplate, params object[] inputs)
+        {
+            return Path.Combine(AppDataFolder, string.Format(fileNameTemplate, inputs));
+        }
+
+        private static Process ConfigureFfmpegProcess(string parameters)
+        {
+            return new Process
+            {
+                StartInfo =
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    FileName = FfmpegPath,
+                    Arguments = parameters
+                }
+            };
         }
     }
 }
