@@ -97,4 +97,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)wwwroot\*.*" "$(ProjectDir)bin\$(ConfigurationName)\wwwroot\" /Y /D /E /I</PostBuildEvent>
+  </PropertyGroup>
 </Project>
