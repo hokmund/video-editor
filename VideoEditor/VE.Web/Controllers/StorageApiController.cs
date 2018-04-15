@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,7 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using VE.Web.Models;
+using VE.Web.Contracts;
 using VE.Web.Services;
 
 namespace VE.Web.Controllers
@@ -69,6 +70,16 @@ namespace VE.Web.Controllers
             };
 
             return response;
+        }
+
+        [Route("video/all")]
+        [HttpGet]
+        public IEnumerable<string> GetVideoFiles()
+        {
+            return new DirectoryInfo(GetRootPath())
+                .GetFiles()
+                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
+                .Select(f => f.Name);
         }
 
         private static string GetRootPath()

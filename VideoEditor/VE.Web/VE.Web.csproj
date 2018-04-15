@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Constants.cs" />
     <Compile Include="Contracts\IFfmpegService.cs" />
     <Compile Include="Controllers\StorageApiController.cs" />
     <Compile Include="Controllers\VideoApiController.cs" />
