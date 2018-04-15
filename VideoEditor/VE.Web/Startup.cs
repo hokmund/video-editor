@@ -1,4 +1,10 @@
-﻿using VE.Web;
+﻿using System.Net.Http.Formatting;
+using System.Web.Http;
+using Microsoft.Owin;
+using Microsoft.Owin.FileSystems;
+using Microsoft.Owin.StaticFiles;
+using Owin;
+using VE.Web;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace VE.Web
@@ -22,7 +28,7 @@ namespace VE.Web
             appBuilder.UseWebApi(httpConfiguration);
 
             // Static Files Server
-            var physicalFileSystem = new PhysicalFileSystem(@"../../wwwroot");
+            var physicalFileSystem = new PhysicalFileSystem(@"./wwwroot");
             var options = new FileServerOptions
             {
                 EnableDefaultFiles = true,
