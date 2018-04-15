@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using VE.Web.Contracts;
+using VE.Web.Models;
 using VE.Web.Services;
 
 namespace VE.Web.Controllers
@@ -74,12 +75,12 @@ namespace VE.Web.Controllers
 
         [Route("video/all")]
         [HttpGet]
-        public IEnumerable<string> GetVideoFiles()
+        public IEnumerable<VideosListItem> GetVideoFiles()
         {
             return new DirectoryInfo(GetRootPath())
                 .GetFiles()
                 .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
-                .Select(f => f.Name);
+                .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
         }
 
         private static string GetRootPath()

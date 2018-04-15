@@ -94,10 +94,10 @@ var videoEditor = {
      * ajaxRequest
      *
      */
-    ajaxRequest: function (url, post_data, callback) {
+    ajaxRequest: function (url, post_data, callback, method) {
 
         $.ajax({
-            type: "POST",
+            type: method || "POST",
             cache: false,
             dataType: 'json',
             url: this.apiPath + url,
@@ -310,7 +310,7 @@ var videoEditor = {
     /* getListInput */
     getListInput: function (callback) {
 
-        this.ajaxRequest('storage/getVideosList', {}, function (response) {
+        this.ajaxRequest('storage/video/all', {}, function (response) {
 
             if (response) {
 
@@ -343,7 +343,7 @@ var videoEditor = {
 
             }
 
-        });
+        }, 'GET');
 
     },
 
