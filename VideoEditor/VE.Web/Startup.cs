@@ -28,7 +28,7 @@ namespace VE.Web
             appBuilder.UseWebApi(httpConfiguration);
 
             // Static Files Server
-            var physicalFileSystem = new PhysicalFileSystem(@"./wwwroot");
+            var physicalFileSystem = new PhysicalFileSystem(@"../../wwwroot");
             var options = new FileServerOptions
             {
                 EnableDefaultFiles = true,
