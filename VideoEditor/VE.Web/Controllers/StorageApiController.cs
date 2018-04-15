@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -69,6 +70,16 @@ namespace VE.Web.Controllers
             };
 
             return response;
+        }
+
+        [Route("getVideosList")]
+        [HttpPost]
+        public IEnumerable<VideosListItem> GetVideosList()
+        {
+            FileInfo[] files = new DirectoryInfo(GetRootPath())
+                .GetFiles();
+
+            return files.Select(file => new VideosListItem(file.Name, FilesUtils.BytesToMB(file.Length)));
         }
 
         private static string GetRootPath()

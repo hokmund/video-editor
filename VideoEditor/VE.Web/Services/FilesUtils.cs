@@ -27,5 +27,10 @@ namespace VE.Web.Services
         {
             return Path.Combine(TempDataFolder, fileName);
         }
+
+        public static int BytesToMB(long bytes)
+        {
+            return (int)(bytes / 1_000_000);
+        }
     }
 }
