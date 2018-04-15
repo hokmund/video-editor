@@ -3,7 +3,7 @@ using System.IO;
 
 namespace VE.Web.Services
 {
-    public static class TempFilesUtils
+    public static class FilesUtils
     {
         private const string AppDataFolder = "AppData";
 
@@ -23,9 +23,9 @@ namespace VE.Web.Services
             return Path.Combine(MediaDataFolder, string.Format(fileNameTemplate, inputs));
         }
 
-        public static string GetTempFile(string fileNameTemplate, params object[] inputs)
+        public static string GetTempFile(string fileName)
         {
-            return Path.Combine(TempDataFolder, string.Format(fileNameTemplate, inputs));
+            return Path.Combine(TempDataFolder, fileName);
         }
     }
 }

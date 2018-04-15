@@ -16,7 +16,7 @@ namespace VE.Web.Services
         public string GetFrame(string inputVideo, int timeInSeconds)
         {
             var inputVideoName = Path.GetFileNameWithoutExtension(inputVideo);
-            var outputFrame = TempFilesUtils.GetMediaFile("{0}_{1}_sec.jpeg", inputVideoName, timeInSeconds);
+            var outputFrame = FilesUtils.GetMediaFile("{0}_{1}_sec.jpeg", inputVideoName, timeInSeconds);
             var parameters = $"-ss {timeInSeconds} -i {inputVideo} -frames:v 1 -y {outputFrame}";
 
             using (var process = ConfigureProcess(FfmpegPath, parameters))
@@ -32,7 +32,7 @@ namespace VE.Web.Services
         {
             var tempVideos = AdjustResolutions(inputs);
 
-            var outputVideo = TempFilesUtils.GetMediaFile("{0}.mp4", Guid.NewGuid());
+            var outputVideo = FilesUtils.GetMediaFile("{0}.mp4", Guid.NewGuid());
 
             var files = "";
             var filters = "-filter_complex \"";
@@ -52,21 +52,26 @@ namespace VE.Web.Services
                 process.WaitForExit();
             }
 
-            TempFilesUtils.CleanTempFiles(tempVideos);
+            FilesUtils.CleanTempFiles(tempVideos);
 
             return outputVideo;
         }
 
         public string Convert(string inputVideo, VideoConversionOptions options)
         {
-            //var parameters = $"-i {inputVideo} -y {Path.ChangeExtension(inputVideo, format)}";
+            var outputFile = FilesUtils.GetMediaFile("{0}_{1}.{2}",
+                Path.GetFileNameWithoutExtension(inputVideo),
+                Guid.NewGuid(),
+                options.Format.ToString());
 
-            //using (var process = ConfigureProcess(FfmpegPath, parameters))
-            //{
-            //    process.Start();
+            var parameters = $"-i {inputVideo} -y {outputFile}";
 
-            //    process.WaitForExit();
-            //}
+            using (var process = ConfigureProcess(FfmpegPath, parameters))
+            {
+                process.Start();
+
+                process.WaitForExit();
+            }
 
             return string.Empty;
         }
@@ -106,7 +111,7 @@ namespace VE.Web.Services
             foreach (var input in inputs)
             {
                 var tempVideo = $"{Path.GetFileNameWithoutExtension(input)}_{Guid.NewGuid()}.{Path.GetExtension(input)}";
-                tempVideo = TempFilesUtils.GetTempFile(tempVideo);
+                tempVideo = FilesUtils.GetTempFile(tempVideo);
 
                 // Upscale video if it is too small.
                 if (resolutions[input][0] != maxWidth || resolutions[input][1] != maxHeight)
