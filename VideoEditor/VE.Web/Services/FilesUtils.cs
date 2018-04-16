@@ -3,12 +3,12 @@ using System.IO;
 
 namespace VE.Web.Services
 {
-    public static class FilesUtils
+  public static class FilesUtils
     {
         public const string AppDataFolder = "AppData";
 
         public static readonly string InputsDataFolder = Path.Combine(AppDataFolder, "Inputs");
-        public static readonly string ResultsDataFolder = Path.Combine(AppDataFolder, "Results");
+        public static readonly string OutputsDataFolder = Path.Combine(AppDataFolder, "Outputs");
         public static readonly string TempDataFolder = Path.Combine(AppDataFolder, "Temp");
 
         public static void CleanTempFiles(IEnumerable<string> tempFiles)
@@ -21,7 +21,7 @@ namespace VE.Web.Services
 
         public static string GetMediaFile(string fileNameTemplate, params object[] inputs)
         {
-            return Path.Combine(ResultsDataFolder, string.Format(fileNameTemplate, inputs));
+            return Path.Combine(OutputsDataFolder, string.Format(fileNameTemplate, inputs));
         }
 
         public static string GetTempFile(string fileName)
@@ -33,11 +33,5 @@ namespace VE.Web.Services
         {
             return (int)(bytes / 1_000_000);
         }
-    }
-
-    public enum MediaType
-    {
-        Input,
-        Result
     }
 }

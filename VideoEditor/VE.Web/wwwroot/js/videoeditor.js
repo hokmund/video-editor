@@ -45,7 +45,7 @@ var videoEditor = {
         this.setUpButtons();
         this.setUpSlider();
         this.getInputVideos();
-        this.getResultVideos();
+        this.getOutputVideos();
     },
 
     setUpButtons: function() {
@@ -171,8 +171,8 @@ var videoEditor = {
         });
     },
 
-    getResultVideos: function() {
-        videoEditor.ajaxRequest('GET', videoEditor.settings.storagePath + 'video/results', {}, function (response) {
+    getOutputVideos: function() {
+        videoEditor.ajaxRequest('GET', videoEditor.settings.storagePath + 'video/outputs', {}, function (response) {
             if (response) {
                 $('#listOutput').html('<table class="table table-bordered table-hover"></table>');
                 if (response.length > 0) {
@@ -183,7 +183,7 @@ var videoEditor = {
                         var size = response[i].size.toString() + ' MB';
 
                         var row = '<tr>';
-                        row += '<td><a href="AppData/Media/' + name + '" target="_blank">' + name + '</a></td>';
+                        row += '<td><a href="AppData/Outputs/' + name + '" target="_blank">' + name + '</a></td>';
                         row += '<td>' + size + '</a></td>';
                         row += '<td class="text-right">';
                         row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="Проиграть"><span class="glyphicon glyphicon-play"></span></button>';

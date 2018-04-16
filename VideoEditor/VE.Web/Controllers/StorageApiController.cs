@@ -75,11 +75,11 @@ namespace VE.Web.Controllers
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
         }
 
-        [Route("video/results")]
+        [Route("video/outputs")]
         [HttpGet]
-        public IEnumerable<VideosListItem> GetResultFiles()
+        public IEnumerable<VideosListItem> GetOutputFiles()
         {
-            return new DirectoryInfo(GetRootPath(MediaType.Result))
+            return new DirectoryInfo(GetRootPath(MediaType.Output))
                 .GetFiles()
                 .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
@@ -102,7 +102,7 @@ namespace VE.Web.Controllers
 
         private static string GetRootPath(MediaType type)
         {
-            var folder = type == MediaType.Input ? FilesUtils.InputsDataFolder : FilesUtils.ResultsDataFolder;
+            var folder = type == MediaType.Input ? FilesUtils.InputsDataFolder : FilesUtils.OutputsDataFolder;
             string root = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase) ?? string.Empty,
                 folder);
