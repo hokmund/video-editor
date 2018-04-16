@@ -154,7 +154,7 @@
     <div class="modal fade" id="createVideoModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="action.php" enctype="multipart/form-data" method="post">
+                <form id="createForm" action="" enctype="multipart/form-data" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title">Создать видео</h4>
@@ -164,9 +164,8 @@
                         <div class="form-group">
                             <label for="opt_quality">Качество видео:</label>
                             <select name="quality" id="opt_quality" class="form-control">
-                                <option value="0">Без конвертации</option>
                                 <option value="low">Низкое</option>
-                                <option value="medium">Среднее</option>
+                                <option value="medium" selected>Среднее</option>
                                 <option value="high">Высокое</option>
                             </select>
                         </div>
@@ -176,9 +175,9 @@
 
                                 <div class="form-group">
                                     <label for="opt_size">Размер видео:</label>
-                                    <select name="quality" id="opt_size" class="form-control" disabled="disabled">
+                                    <select name="size" id="opt_size" class="form-control">
                                         <option value="360">360p</option>
-                                        <option value="480">480p</option>
+                                        <option value="480" selected>480p</option>
                                         <option value="576">576p</option>
                                         <option value="720">720p</option>
                                     </select>
@@ -189,8 +188,8 @@
 
                                 <div class="form-group">
                                     <label for="opt_format">Формат видео:</label>
-                                    <select name="format" id="opt_format" class="form-control" disabled="disabled">
-                                        <option value="mp4">mp4</option>
+                                    <select name="format" id="opt_format" class="form-control">
+                                        <option value="mp4" selected>mp4</option>
                                         <option value="flv">flv</option>
                                         <option value="webm">webm</option>
                                         <option value="ogv">ogv</option>

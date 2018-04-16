@@ -7,7 +7,8 @@ namespace VE.Web.Services
     {
         public const string AppDataFolder = "AppData";
 
-        public static readonly string MediaDataFolder = Path.Combine(AppDataFolder, "Media");
+        public static readonly string InputsDataFolder = Path.Combine(AppDataFolder, "Inputs");
+        public static readonly string ResultsDataFolder = Path.Combine(AppDataFolder, "Results");
         public static readonly string TempDataFolder = Path.Combine(AppDataFolder, "Temp");
 
         public static void CleanTempFiles(IEnumerable<string> tempFiles)
@@ -20,7 +21,7 @@ namespace VE.Web.Services
 
         public static string GetMediaFile(string fileNameTemplate, params object[] inputs)
         {
-            return Path.Combine(MediaDataFolder, string.Format(fileNameTemplate, inputs));
+            return Path.Combine(ResultsDataFolder, string.Format(fileNameTemplate, inputs));
         }
 
         public static string GetTempFile(string fileName)
@@ -32,5 +33,11 @@ namespace VE.Web.Services
         {
             return (int)(bytes / 1_000_000);
         }
+    }
+
+    public enum MediaType
+    {
+        Input,
+        Result
     }
 }

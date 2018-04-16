@@ -22,7 +22,7 @@ namespace VE.Web.Controllers
         [HttpPost]
         public async Task Upload()
         {
-            var provider = new MultipartFormDataStreamProvider(GetRootPath());
+            var provider = new MultipartFormDataStreamProvider(GetRootPath(MediaType.Input));
 
             await this.Request.Content.ReadAsMultipartAsync(provider);
 
@@ -43,7 +43,7 @@ namespace VE.Web.Controllers
         [HttpGet]
         public HttpResponseMessage Download(string fileId)
         {
-            FileInfo fileInfo = GetFileInfo(fileId);
+            FileInfo fileInfo = GetFileInfo(MediaType.Input, fileId);
             if (fileInfo == null)
             {
                 return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{fileId}' not found.");
@@ -65,11 +65,21 @@ namespace VE.Web.Controllers
             return response;
         }
 
-        [Route("video/all")]
+        [Route("video/inputs")]
         [HttpGet]
-        public IEnumerable<VideosListItem> GetVideoFiles()
+        public IEnumerable<VideosListItem> GetInputFiles()
         {
-            return new DirectoryInfo(GetRootPath())
+            return new DirectoryInfo(GetRootPath(MediaType.Input))
+                .GetFiles()
+                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
+                .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
+        }
+
+        [Route("video/results")]
+        [HttpGet]
+        public IEnumerable<VideosListItem> GetResultFiles()
+        {
+            return new DirectoryInfo(GetRootPath(MediaType.Result))
                 .GetFiles()
                 .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
@@ -79,7 +89,7 @@ namespace VE.Web.Controllers
         [HttpDelete]
         public HttpResponseMessage Delete(string fileId)
         {
-            FileInfo fileInfo = GetFileInfo(fileId);
+            FileInfo fileInfo = GetFileInfo(MediaType.Input, fileId);
             if (fileInfo == null)
             {
                 return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{fileId}' not found.");
@@ -90,18 +100,19 @@ namespace VE.Web.Controllers
             return this.Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        private static string GetRootPath()
+        private static string GetRootPath(MediaType type)
         {
+            var folder = type == MediaType.Input ? FilesUtils.InputsDataFolder : FilesUtils.ResultsDataFolder;
             string root = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase) ?? string.Empty,
-                FilesUtils.MediaDataFolder);
+                folder);
 
             return new Uri(root).LocalPath;
         }
 
-        private static FileInfo GetFileInfo(string fileId)
+        private static FileInfo GetFileInfo(MediaType type, string fileId)
         {
-            FileInfo fileInfo = new DirectoryInfo(GetRootPath())
+            FileInfo fileInfo = new DirectoryInfo(GetRootPath(type))
                 .GetFiles()
                 .FirstOrDefault(f => f.Name.Equals(fileId + f.Extension, StringComparison.InvariantCultureIgnoreCase));
 

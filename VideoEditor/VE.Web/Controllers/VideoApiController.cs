@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using VE.Web.Models;
 using VE.Web.Services;
@@ -31,8 +32,27 @@ namespace VE.Web.Controllers
         [HttpGet]
         public string GetFrame(string name, int time)
         {
-            var inputVideo = $"{FilesUtils.MediaDataFolder}\\{name}";
+            var inputVideo = $"{FilesUtils.InputsDataFolder}\\{name}";
             return new FfmpegService().GetFrame(inputVideo, time).Replace('\\', '/');
+        }
+
+        [Route("join")]
+        [HttpPost]
+        public string Join([FromBody]JoinRequest model)
+        {
+            if (model.Files.Length == 0)
+            {
+                return null;
+            }
+
+            var resultVideo = new FfmpegService().Join(
+                model.Files.Select(
+                    file => $"{FilesUtils.InputsDataFolder}\\{file}"
+                )
+                .ToArray()
+            );
+
+            return resultVideo;
         }
     }
 }

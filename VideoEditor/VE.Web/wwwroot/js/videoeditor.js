@@ -12,14 +12,14 @@ var videoEditor = {
         time: '',
         duration: 0,
         frames: 0,
-        fps: 24,
+        fps: 30,
         segments: []
     },
 
     ajaxRequest: function (type, url, data, callback) {
         $.ajax({
             type: type,
-            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
             url: url,
             data: data,
             success: function (response) {
@@ -44,7 +44,8 @@ var videoEditor = {
 
         this.setUpButtons();
         this.setUpSlider();
-        this.getAllVideos();
+        this.getInputVideos();
+        this.getResultVideos();
     },
 
     setUpButtons: function() {
@@ -57,6 +58,25 @@ var videoEditor = {
         });
 
         $('#btnPlay').click(videoEditor.playVideo);
+
+        $('#btnSubmit').click(function(e) {
+            e.preventDefault();
+        
+            var data = {
+                quality: $('#opt_quality').val(),
+                size: $('#opt_size').val(),
+                format: $('#opt_format').val(),
+                files: videoEditor.video.segments.map(function(value) {
+                    return value.name;
+                })
+            };
+        
+            var formData = JSON.stringify(data);
+        
+            videoEditor.ajaxRequest('POST', '/api/video/join', formData, function() {
+
+            });
+        });
     },
 
     setUpSlider: function() {
@@ -64,15 +84,15 @@ var videoEditor = {
             value: 0,
             step: 0.01,
             stop: function (event, ui) {
+                var timeSeconds = Math.floor(ui.value / videoEditor.video.fps);
+                var time = (ui.value / videoEditor.video.fps).toFixed(2);
 
-                //var index = $(ui.handle).prevAll('.ui-slider-handle').length;
-                var time = Math.floor(ui.value / videoEditor.video.fps);
-
-                //videoEditor.handlerActive = index;
                 $("#time-range .ui-slider-handle").removeClass('ui-handle-active');
                 $(ui.handle).addClass('ui-handle-active');
                 videoEditor.stopVideo();
-                videoEditor.getFrame(time);
+                videoEditor.getFrame(timeSeconds);
+                var timeLabel = videoEditor.secondsToTime(time);
+                $('.time-line .label:eq(0)').text(timeLabel);
             }
         });
     },
@@ -118,36 +138,61 @@ var videoEditor = {
     updateTime: function (frames) {
         $("#time-range").slider("value", frames);
         var time = videoEditor.secondsToTime(videoEditor.player.currentTime);
-
         $('.time-line .label:eq(0)').text(time);
     },
 
-    getAllVideos: function() {
-        videoEditor.ajaxRequest('GET', videoEditor.settings.storagePath + 'video/all', {}, function(response) {
+    getInputVideos: function() {
+        videoEditor.ajaxRequest('GET', videoEditor.settings.storagePath + 'video/inputs', {}, function(response) {
             if (response) {
                 $('#listInput').empty();
-                videoEditor.segments = [];
+                videoEditor.video.segments = [];
                 for (var i in response) {
                     if (!response.hasOwnProperty(i)) continue;
 
                     var name = response[i].name;
+                    var size = response[i].size.toString() + ' MB';
+                    videoEditor.video.segments.push({ 'name': name, 'size': size });
                     var ext = name.split('.').pop();
                     var titleStr = '';
                     if (name.length - 4 > 20) {
                         titleStr = ' title="' + name + '"';
                         name = name.substr(0, 20) + '...' + ext;
                     }
-                    var size = response[i].size.toString() + ' MB';
 
                     var row = '<a href="#" class="list-group-item" data-value="' + response[i].name + '"' + titleStr + '>' + name + ' (' + size + ')</a>';
 
                     $('#listInput').append(row);
-                    videoEditor.segments.push({ name: name, size: size });
                 }
 
                 $('#listInput a:first').addClass('active');
                 videoEditor.activeVideo = $('#input-list a.active').data('value');
                 videoEditor.getCurrentVideo();
+            }
+        });
+    },
+
+    getResultVideos: function() {
+        videoEditor.ajaxRequest('GET', videoEditor.settings.storagePath + 'video/results', {}, function (response) {
+            if (response) {
+                $('#listOutput').html('<table class="table table-bordered table-hover"></table>');
+                if (response.length > 0) {
+                    for (var i in response) {
+                        if (!response.hasOwnProperty(i)) continue;
+
+                        var name = response[i].name;
+                        var size = response[i].size.toString() + ' MB';
+
+                        var row = '<tr>';
+                        row += '<td><a href="AppData/Media/' + name + '" target="_blank">' + name + '</a></td>';
+                        row += '<td>' + size + '</a></td>';
+                        row += '<td class="text-right">';
+                        row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="Проиграть"><span class="glyphicon glyphicon-play"></span></button>';
+                        row += ' <button class="btn btn-default btn-sm remove" data-value="' + name + '" data-toggle="tooltip" title="Удалить"><span class="glyphicon glyphicon-remove"></span></button>';
+                        row += '</td></tr>';
+
+                        $('#listOutput table').append(row);
+                    }
+                }
             }
         });
     },
