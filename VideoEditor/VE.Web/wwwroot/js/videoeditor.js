@@ -238,7 +238,7 @@ var videoEditor = {
         videoEditor.stopVideo();
 
         var target = !$(e.target).is('button') ? $(e.target).parent() : $(e.target);
-        var video_name = !!target.data('value') ? target.data('value') : videoEditor.video.name;
+        var video_name = !!target.data('value') ? target.data('value') : videoEditor.activeVideo;
         var video_type = !!target.data('value') ? 'Output' : 'Input';
 
         var video = video_name.split('.')[0];
