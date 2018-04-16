@@ -101,7 +101,7 @@
                         <div class="col-md-5">
                             <div class="btn-group btn-group-justified">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#createVideoModal">
+                                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#joinVideoModal">
                                         <span class="glyphicon  glyphicon-resize-small"></span>
                                         Склеить
                                     </button>
@@ -151,13 +151,29 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="joinVideoModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="joinForm" action="" enctype="multipart/form-data" method="post">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Склеить видео</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="btnJoin">Склеить</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     <div class="modal fade" id="createVideoModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="createForm" action="" enctype="multipart/form-data" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Создать видео</h4>
+                        <h4 class="modal-title">Скачать видео</h4>
                     </div>
                     <div class="modal-body">
 

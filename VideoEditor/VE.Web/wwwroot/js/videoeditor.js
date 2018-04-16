@@ -15,6 +15,7 @@ var videoEditor = {
         fps: 30,
         segments: []
     },
+    convertingVideo: null,
 
     ajaxRequest: function (type, url, data, callback) {
         $.ajax({
@@ -59,7 +60,13 @@ var videoEditor = {
 
         $('#btnPlay').click(videoEditor.getCurrentVideo);
         $('#btnRemove').click(videoEditor.removeVideo);
-        $(document).on('click', '#listOutput button.play', videoEditor.getCurrentVideo);
+        $(document).on('click', '#listOutput button.download', function(e) {
+
+            var target = !$(e.target).is('button') ? $(e.target).parent() : $(e.target);
+            videoEditor.convertingVideo = target.data('value');
+
+            $('#createVideoModal').modal();
+        });
         $(document).on('click', '#listOutput button.remove', videoEditor.removeVideo);
 
         $('#btnSubmit').click(function(e) {
@@ -70,6 +77,20 @@ var videoEditor = {
                 width: $('#opt_width').val(),
                 height: $('#opt_height').val(),
                 format: $('#opt_format').val(),
+                file: videoEditor.convertingVideo
+            };
+        
+            var formData = JSON.stringify(data);
+        
+            videoEditor.ajaxRequest('POST', '/api/video/convert', formData, function() {
+                videoEditor.getOutputVideos();
+            });
+        });
+
+        $('#btnJoin').click(function(e) {
+            e.preventDefault();
+        
+            var data = {
                 files: videoEditor.video.segments.map(function(value) {
                     return value.name;
                 })
@@ -78,7 +99,7 @@ var videoEditor = {
             var formData = JSON.stringify(data);
         
             videoEditor.ajaxRequest('POST', '/api/video/join', formData, function() {
-
+                videoEditor.getOutputVideos();
             });
         });
     },
@@ -190,7 +211,7 @@ var videoEditor = {
                         row += '<td><a href="AppData/Outputs/' + name + '" target="_blank">' + name + '</a></td>';
                         row += '<td>' + size + '</a></td>';
                         row += '<td class="text-right">';
-                        row += ' <button class="btn btn-default btn-sm play" data-value="' + name + '" data-toggle="tooltip" title="Проиграть"><span class="glyphicon glyphicon-play"></span></button>';
+                        row += ' <button class="btn btn-default btn-sm download" data-value="' + name + '" data-toggle="tooltip" title="Скачать"><span class="glyphicon glyphicon-download"></span></button>';
                         row += ' <button class="btn btn-default btn-sm remove" data-value="' + name + '" data-toggle="tooltip" title="Удалить"><span class="glyphicon glyphicon-remove"></span></button>';
                         row += '</td></tr>';
 

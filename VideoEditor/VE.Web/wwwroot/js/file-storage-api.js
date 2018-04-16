@@ -23,7 +23,7 @@ $('#uploadFileSubmitBtn').on('click', function () {
             data: data
         })
         .done(function(xhr, textStatus) {
-            var t = xhr;
+            videoEditor.getInputVideos();
         })
         .fail(function(xhr, textStatus, err) {
             var t = xhr;

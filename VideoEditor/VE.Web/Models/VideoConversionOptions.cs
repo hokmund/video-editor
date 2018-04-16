@@ -16,7 +16,7 @@ namespace VE.Web.Models
 
         public int Bitrate { get; set; }
 
-        public static VideoConversionOptions FromJoinRequest(JoinRequest request)
+        public static VideoConversionOptions FromConvertRequest(ConvertRequest request)
         {
             return new VideoConversionOptions
             {
