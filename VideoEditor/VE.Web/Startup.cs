@@ -9,50 +9,55 @@ using VE.Web;
 [assembly: OwinStartup(typeof(Startup))]
 namespace VE.Web
 {
-    public class Startup
-    {
-        public void Configuration(IAppBuilder appBuilder)
-        {
-            var httpConfiguration = new HttpConfiguration();
+	public class Startup
+	{
+		public void Configuration(IAppBuilder appBuilder)
+		{
+			var httpConfiguration = new HttpConfiguration();
 
-            // Routes
-            httpConfiguration.MapHttpAttributeRoutes();
+			// Routes
+			httpConfiguration.MapHttpAttributeRoutes();
 
-            // Formatters
-            httpConfiguration.Formatters.AddRange(new MediaTypeFormatter[]
-            {
-                new JsonMediaTypeFormatter()
-            });
+			// Formatters
+			httpConfiguration.Formatters.AddRange(new MediaTypeFormatter[]
+			{
+				new JsonMediaTypeFormatter()
+			});
 
-            // Web API
-            appBuilder.UseWebApi(httpConfiguration);
+			// Web API
+			appBuilder.UseWebApi(httpConfiguration);
 
-            // Static Files Server
-            var physicalFileSystem = new PhysicalFileSystem(@"../../wwwroot");
-            var options = new FileServerOptions
-            {
-                EnableDefaultFiles = true,
-                FileSystem = physicalFileSystem,
-                StaticFileOptions =
-                {
-                    FileSystem = physicalFileSystem,
-                    ServeUnknownFileTypes = true
-                },
-                DefaultFilesOptions =
-                {
-                    DefaultFileNames = new[]
-                    {
-                        "index.html"
-                    }
-                }
-            };
+			// Static Files Server
+			var physicalFileSystem = new PhysicalFileSystem(@"./wwwroot");
 
-            appBuilder.UseFileServer(options);
-            appBuilder.UseStaticFiles(new StaticFileOptions()
-            {
-                RequestPath = new PathString("/AppData"),
-                FileSystem = new PhysicalFileSystem(@"AppData")
-            });
-        }
-    }
+#if DEBUG
+			physicalFileSystem = new PhysicalFileSystem(@"../../wwwroot");
+#endif
+
+			var options = new FileServerOptions
+			{
+				EnableDefaultFiles = true,
+				FileSystem = physicalFileSystem,
+				StaticFileOptions =
+				{
+					FileSystem = physicalFileSystem,
+					ServeUnknownFileTypes = true
+				},
+				DefaultFilesOptions =
+				{
+					DefaultFileNames = new[]
+					{
+						"index.html"
+					}
+				}
+			};
+
+			appBuilder.UseFileServer(options);
+			appBuilder.UseStaticFiles(new StaticFileOptions()
+			{
+				RequestPath = new PathString("/AppData"),
+				FileSystem = new PhysicalFileSystem(@"AppData")
+			});
+		}
+	}
 }

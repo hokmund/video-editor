@@ -137,6 +137,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)wwwroot\*.*" "$(ProjectDir)bin\$(ConfigurationName)\wwwroot\" /Y /D /E /I</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)wwwroot\*.*" "$(ProjectDir)bin\$(ConfigurationName)\wwwroot\" /Y /D /E /I
+if $(ConfigurationName) == Release xcopy "$(ProjectDir)bin\$(ConfigurationName)\*.*" "$(SolutionDir)\..\build\" /Y /D /E /I</PostBuildEvent>
   </PropertyGroup>
 </Project>
