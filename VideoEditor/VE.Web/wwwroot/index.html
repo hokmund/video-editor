@@ -161,28 +161,38 @@
                     </div>
                     <div class="modal-body">
 
-                        <div class="form-group">
-                            <label for="opt_bitrate">Битрейт видео:</label>
-                            <select name="bitrate" id="opt_bitrate" class="form-control">
-                                <option value="322">Низкий (322)</option>
-                                <option value="500" selected>Средний (500)</option>
-                                <option value="1000">Высокий (1000)</option>
-                                <option value="2000">Наилучший (2000)</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label for="opt_width">Ширина:</label>
+                                    <input name="width" id="opt_width" type="number" value="640" class="form-control">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label for="opt_height">Высота:</label>
+                                    <input name="height" id="opt_height" type="number" value="360" class="form-control">
+                                </div>
+
+                            </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
 
                                 <div class="form-group">
-                                    <label for="opt_size">Размер видео:</label>
-                                    <select name="size" id="opt_size" class="form-control">
-                                        <option value="360">360p</option>
-                                        <option value="480" selected>480p</option>
-                                        <option value="576">576p</option>
-                                        <option value="720">720p</option>
-                                    </select>
-                                </div>
+                                        <label for="opt_bitrate">Битрейт видео:</label>
+                                        <select name="bitrate" id="opt_bitrate" class="form-control">
+                                            <option value="322">Низкий (322)</option>
+                                            <option value="500" selected>Средний (500)</option>
+                                            <option value="1000">Высокий (1000)</option>
+                                            <option value="2000">Наилучший (2000)</option>
+                                        </select>
+                                    </div>
 
                             </div>
                             <div class="col-md-6">
@@ -190,10 +200,11 @@
                                 <div class="form-group">
                                     <label for="opt_format">Формат видео:</label>
                                     <select name="format" id="opt_format" class="form-control">
-                                        <option value="Mp4" selected>mp4</option>
-                                        <option value="Flv">flv</option>
-                                        <option value="Webm">webm</option>
-                                        <option value="Ogv">ogv</option>
+                                        <option value="mp4" selected>mp4</option>
+                                        <option value="flv">flv</option>
+                                        <option value="webm">webm</option>
+                                        <option value="ogv">ogv</option>
+                                        <option value="avi">avi</option>
                                     </select>
                                 </div>
 

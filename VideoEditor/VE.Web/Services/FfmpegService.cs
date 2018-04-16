@@ -79,7 +79,7 @@ namespace VE.Web.Services
                 "{0}_{1}.{2}",
                 Path.GetFileNameWithoutExtension(inputVideo),
                 Guid.NewGuid(),
-                options.Format.ToString());
+                options.Format.ToString().ToLower());
 
             var parameters = $"-i {inputVideo} ";
 

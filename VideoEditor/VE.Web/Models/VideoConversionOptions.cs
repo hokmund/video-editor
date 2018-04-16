@@ -21,9 +21,9 @@ namespace VE.Web.Models
             return new VideoConversionOptions
             {
                 Bitrate = request.Bitrate,
-                Format = (VideoFormat)Enum.Parse(typeof(VideoFormat), request.Format),
+                Format = (VideoFormat)Enum.Parse(typeof(VideoFormat), request.Format, true),
                 Height = request.Height,
-                Width = request.Height * 18 / 9,
+                Width = request.Width,
             };
         }
     }

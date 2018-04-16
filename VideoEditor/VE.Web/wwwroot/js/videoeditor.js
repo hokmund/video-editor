@@ -67,7 +67,8 @@ var videoEditor = {
         
             var data = {
                 bitrate: $('#opt_bitrate').val(),
-                size: $('#opt_size').val(),
+                width: $('#opt_width').val(),
+                height: $('#opt_height').val(),
                 format: $('#opt_format').val(),
                 files: videoEditor.video.segments.map(function(value) {
                     return value.name;
