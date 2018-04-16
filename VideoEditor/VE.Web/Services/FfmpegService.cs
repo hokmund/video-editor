@@ -154,7 +154,7 @@ namespace VE.Web.Services
 
             foreach (var input in inputs)
             {
-                var tempVideo = $"{Path.GetFileNameWithoutExtension(input)}_{Guid.NewGuid()}.{Path.GetExtension(input)}";
+                var tempVideo = $"{Path.GetFileNameWithoutExtension(input)}_{Guid.NewGuid()}{Path.GetExtension(input)}";
                 tempVideo = FilesUtils.GetTempFile(tempVideo);
 
                 // Upscale video if it is too small.
