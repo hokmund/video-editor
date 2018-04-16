@@ -9,12 +9,7 @@ namespace VE.Web.Controllers
     [RoutePrefix("api/video")]
     public class VideoApiController : ApiController
     {
-        private readonly IFfmpegService service;
-
-        public VideoApiController()
-        {
-            this.service = new FfmpegService();
-        }
+        private readonly IFfmpegService service = new FfmpegService();
 
         [Route("getFrame")]
         [HttpGet]
