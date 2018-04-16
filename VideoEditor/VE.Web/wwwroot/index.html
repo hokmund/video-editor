@@ -70,8 +70,8 @@
 
                 <div class="time-line well">
                     <div class="time-line-b">
-                        <span class="label label-default pull-left">00:00:00</span>
-                        <span class="label label-default pull-right">00:00:00</span>
+                        <span class="label label-default pull-left">00:00:00.00</span>
+                        <span class="label label-default pull-right">00:00:00.00</span>
                         <div class="clearfix"></div>
                     </div>
                     <div id="time-range"></div>
@@ -162,11 +162,12 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="opt_quality">Качество видео:</label>
-                            <select name="quality" id="opt_quality" class="form-control">
-                                <option value="low">Низкое</option>
-                                <option value="medium" selected>Среднее</option>
-                                <option value="high">Высокое</option>
+                            <label for="opt_bitrate">Битрейт видео:</label>
+                            <select name="bitrate" id="opt_bitrate" class="form-control">
+                                <option value="322">Низкий (322)</option>
+                                <option value="500" selected>Средний (500)</option>
+                                <option value="1000">Высокий (1000)</option>
+                                <option value="2000">Наилучший (2000)</option>
                             </select>
                         </div>
 
@@ -189,10 +190,10 @@
                                 <div class="form-group">
                                     <label for="opt_format">Формат видео:</label>
                                     <select name="format" id="opt_format" class="form-control">
-                                        <option value="mp4" selected>mp4</option>
-                                        <option value="flv">flv</option>
-                                        <option value="webm">webm</option>
-                                        <option value="ogv">ogv</option>
+                                        <option value="Mp4" selected>mp4</option>
+                                        <option value="Flv">flv</option>
+                                        <option value="Webm">webm</option>
+                                        <option value="Ogv">ogv</option>
                                     </select>
                                 </div>
 

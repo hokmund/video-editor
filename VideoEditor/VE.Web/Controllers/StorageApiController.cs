@@ -71,7 +71,7 @@ namespace VE.Web.Controllers
         {
             return new DirectoryInfo(GetRootPath(MediaType.Input))
                 .GetFiles()
-                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
+                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension.ToLowerInvariant()))
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
         }
 
@@ -81,18 +81,18 @@ namespace VE.Web.Controllers
         {
             return new DirectoryInfo(GetRootPath(MediaType.Output))
                 .GetFiles()
-                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension))
+                .Where(f => Constants.VideoFormatsExtensions.Contains(f.Extension.ToLowerInvariant()))
                 .Select(f => new VideosListItem(f.Name, FilesUtils.BytesToMB(f.Length)));
         }
 
-        [Route("delete/{fileId}")]
+        [Route("delete")]
         [HttpDelete]
-        public HttpResponseMessage Delete(string fileId)
+        public HttpResponseMessage Delete([FromBody] DeleteRequest model)
         {
-            FileInfo fileInfo = GetFileInfo(MediaType.Input, fileId);
+            FileInfo fileInfo = GetFileInfo(model.Type, model.FileId);
             if (fileInfo == null)
             {
-                return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{fileId}' not found.");
+                return this.Request.CreateResponse(HttpStatusCode.BadRequest, $"File '{model.FileId}' not found.");
             }
 
             File.Delete(fileInfo.FullName);

@@ -45,12 +45,16 @@ namespace VE.Web.Controllers
                 return null;
             }
 
-            var resultVideo = new FfmpegService().Join(
+            var service = new FfmpegService();
+
+            var joinedVideo = service.Join(
                 model.Files.Select(
                     file => $"{FilesUtils.InputsDataFolder}\\{file}"
                 )
                 .ToArray()
             );
+
+            var resultVideo = service.Convert(joinedVideo, VideoConversionOptions.FromJoinRequest(model));
 
             return resultVideo;
         }

@@ -4,8 +4,8 @@ namespace VE.Web.Models
 {
     public class JoinRequest
     {
-        [JsonProperty("quality")]
-        public string Quality { get; set; }
+        [JsonProperty("bitrate")]
+        public int Bitrate { get; set; }
 
         [JsonProperty("size")]
         public int Height { get; set; }

@@ -57,13 +57,16 @@ var videoEditor = {
             videoEditor.getCurrentVideo();
         });
 
-        $('#btnPlay').click(videoEditor.playVideo);
+        $('#btnPlay').click(videoEditor.getCurrentVideo);
+        $('#btnRemove').click(videoEditor.removeVideo);
+        $(document).on('click', '#listOutput button.play', videoEditor.getCurrentVideo);
+        $(document).on('click', '#listOutput button.remove', videoEditor.removeVideo);
 
         $('#btnSubmit').click(function(e) {
             e.preventDefault();
         
             var data = {
-                quality: $('#opt_quality').val(),
+                bitrate: $('#opt_bitrate').val(),
                 size: $('#opt_size').val(),
                 format: $('#opt_format').val(),
                 files: videoEditor.video.segments.map(function(value) {
@@ -127,7 +130,7 @@ var videoEditor = {
 
         var time = videoEditor.secondsToTime(videoEditor.video.duration);
 
-        $('.time-line .label:eq(0)').text('00:00:00');
+        $('.time-line .label:eq(0)').text('00:00:00.00');
         $('.time-line .label:eq(1)').text(time);
 
         $("#time-range").slider("option", "max", videoEditor.video.frames);
@@ -218,6 +221,8 @@ var videoEditor = {
             $('#v_time_out').val(videoEditor.secondsToTime(video.duration));
             videoEditor.updateTimeDuration();
         });
+
+        videoEditor.player.play();
     },
 
     getFrame: function (time) {
@@ -226,14 +231,30 @@ var videoEditor = {
         });
     },
 
+    removeVideo: function(e) {
+        e.preventDefault();
+        
+        videoEditor.stopVideo();
+
+        var target = !$(e.target).is('button') ? $(e.target).parent() : $(e.target);
+        var video_name = !!target.data('value') ? target.data('value') : videoEditor.video.name;
+        var video_type = !!target.data('value') ? 'Output' : 'Input';
+
+        var video = video_name.split('.')[0];
+        var data = {
+            fileId: video,
+            type: video_type
+        };
+
+        videoEditor.ajaxRequest('DELETE', videoEditor.settings.storagePath + 'delete', JSON.stringify(data), function(response) {
+            videoEditor.getInputVideos();
+            videoEditor.getOutputVideos();
+        })
+    },
+
     setPoster(imgUrl) {
         videoEditor.player.pause();
         videoEditor.player.setAttribute('poster', imgUrl);
-    },
-
-    playVideo: function() {
-        videoEditor.getCurrentVideo();
-        videoEditor.player.play();
     },
 
     stopVideo: function() {

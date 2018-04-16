@@ -1,4 +1,6 @@
-﻿namespace VE.Web.Models
+﻿using System;
+
+namespace VE.Web.Models
 {
     public class VideoConversionOptions
     {
@@ -13,5 +15,16 @@
         public int HorizontalAspect { get; set; }
 
         public int Bitrate { get; set; }
+
+        public static VideoConversionOptions FromJoinRequest(JoinRequest request)
+        {
+            return new VideoConversionOptions
+            {
+                Bitrate = request.Bitrate,
+                Format = (VideoFormat)Enum.Parse(typeof(VideoFormat), request.Format),
+                Height = request.Height,
+                Width = request.Height * 18 / 9,
+            };
+        }
     }
 }
